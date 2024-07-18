@@ -9,7 +9,7 @@ function App() {
 
   const passwordRef = useRef(null);
 
-  // Generate Password function
+  // generates Password
   const generatePassword = useCallback(() => {
     const lowerCaseLetters = "abcdefghijklmnopqrstuvwxyz";
     const upperCaseLetters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -29,84 +29,76 @@ function App() {
     setPassword(newPassword);
   }, [length, numAllowed, specialCharAllowed, setPassword]);
 
-  // Copy password to clipboard function
   const copyPasswordToClipboard = useCallback(() => {
-    if (passwordRef.current) {
-      passwordRef.current.select();
-      document.execCommand("copy");
-      alert("Password copied to clipboard!");
-    }
-  }, []);
+    passwordRef.current?.select();
+    passwordRef.current?.setSelectionRange(0, 999);
+    document.execCommand("copy");
+    alert("Password copied to clipboard!");
+  }, [password]);
 
-  // Generate password on initial load and when dependencies change
   useEffect(() => {
     generatePassword();
   }, [length, numAllowed, specialCharAllowed, generatePassword]);
 
   return (
     <>
-      <div className="bg-gradient-to-br from-gray-800 to-gray-900 min-h-screen flex items-center justify-center">
-        <div className="w-full max-w-3xl mx-auto shadow-md rounded-lg px-8 py-6 my-8 bg-gray-800 text-orange-500">
-          <h1 className="text-3xl font-bold text-white text-center mb-4">
-            Password Generator
-          </h1>
-          <div className="flex shadow rounded-lg overflow-hidden mb-4">
-            <input
-              type="text"
-              value={password}
-              className="outline-none w-full py-2 px-4 bg-gray-900 text-white"
-              placeholder="Generated Password"
-              readOnly
-              ref={passwordRef}
-            />
-            <button
-              onClick={copyPasswordToClipboard}
-              className="ml-2 px-4 py-2 bg-blue-700 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
-            >
-              Copy
-            </button>
-          </div>
+      <div className="w-full max-w-3xl mx-auto shadow-md rounded-lg px-4 py-3 my-8 bg-gray-900 text-white">
+        <h1 className="text-white text-center my-3">Password Generator</h1>
+        <div className="flex shadow rounded-lg overflow-hidden mb-4">
+          <input
+            type="text"
+            value={password}
+            className="outline-none w-full py-1 px-3 bg-gray-800 text-white"
+            placeholder="Generated Password"
+            readOnly
+            ref={passwordRef}
+          />
+          <button
+            onClick={copyPasswordToClipboard}
+            className="outline-none bg-blue-700 text-white px-3 py-1 rounded-lg"
+          >
+            Copy
+          </button>
+        </div>
 
-          <div className="flex items-center gap-4 mb-4">
-            <label className="text-white">Length:</label>
+        <div className="flex text-sm text-white gap-x-2 mb-4">
+          <div className="flex items-center gap-x-1">
+            <label>Length: {length}</label>
             <input
               type="range"
               min={6}
               max={64}
               value={length}
-              className="cursor-pointer flex-grow bg-gray-900 text-white"
-              onChange={(e) => setLength(Number(e.target.value))}
-            />
-            <span className="text-white">{length}</span>
-          </div>
-
-          <div className="flex items-center gap-4 mb-4 text-white">
-            <input
-              type="checkbox"
-              checked={numAllowed}
-              onChange={() => setNumAllowed(!numAllowed)}
               className="cursor-pointer"
+              onChange={(e) => setLength(e.target.value)}
             />
-            <label>Include Numbers</label>
           </div>
-
-          <div className="flex items-center gap-4 mb-4 text-white">
-            <input
-              type="checkbox"
-              checked={specialCharAllowed}
-              onChange={() => setSpecialCharAllowed(!specialCharAllowed)}
-              className="cursor-pointer"
-            />
-            <label>Include Special Characters</label>
-          </div>
-
-          <button
-            onClick={generatePassword}
-            className="w-full py-3 bg-blue-700 text-white rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
-          >
-            Generate Password
-          </button>
         </div>
+
+        <div className="flex items-center gap-x-2 mb-4 text-white">
+          <input
+            type="checkbox"
+            checked={numAllowed}
+            onChange={() => setNumAllowed(!numAllowed)}
+          />
+          <label>Include Numbers</label>
+        </div>
+
+        <div className="flex items-center gap-x-2 mb-4 text-white">
+          <input
+            type="checkbox"
+            checked={specialCharAllowed}
+            onChange={() => setSpecialCharAllowed(!specialCharAllowed)}
+          />
+          <label>Include Special Characters</label>
+        </div>
+
+        <button
+          onClick={generatePassword}
+          className="w-full bg-blue-700 text-white py-2 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring focus:ring-blue-300"
+        >
+          Generate Password
+        </button>
       </div>
     </>
   );
